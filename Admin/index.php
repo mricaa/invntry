@@ -1,5 +1,5 @@
 <?php 
-    include $_SERVER['DOCUMENT_ROOT'].'/ADMIN/classes/book.php';
+    include $_SERVER['DOCUMENT_ROOT'].'/PLVIL/classes/book.php';
     $db = new DBConnection();
 ?>
 
@@ -80,8 +80,8 @@
                     <tr>
                         <td><?php echo $no;?></td>
                         <td><?php echo $book['bookCategory']; ?></td>
-                        <td><img src="/ADMIN/uploads/<?php echo $book['image1']; ?>" alt="Book Stem" style="width: 100px; height: 100px; border-radius: 0%"></td>
-                        <td><img src="/ADMIN/uploads/<?php echo $book['image2']; ?>" alt="Front Cover" style="width: 100px; height: 100px; border-radius: 0%"></td>
+                        <td><img src="/PLVIL/uploads/<?php echo $book['image1']; ?>" alt="Book Stem" style="width: 100px; height: 100px; border-radius: 0%"></td>
+                        <td><img src="/PLVIL/uploads/<?php echo $book['image2']; ?>" alt="Front Cover" style="width: 100px; height: 100px; border-radius: 0%"></td>
                         <td><?php echo $book['Title']; ?></td>
                         <td><?php echo $book['Author']; ?></td>
                         <td><?php echo $book['columnNumber']; ?></td>
@@ -91,8 +91,8 @@
                         <td><?php echo $book['Property']; ?></td>
                         <td><?php echo $book['isbn']; ?></td>
                         <td>
-                            <button class="btn btn-primary btn-sm editButton" id="<?php echo $book['bookId']?>"><i class="fa-regular fa-pen-to-square"></i>Edit</button>
-                            <button class="btn btn-danger btn-sm deleteButton" id="<?php echo $book['bookId']?>"><i class="fa-regular fa-trash-can"></i>Delete</button>
+                            <button style="width: 80px;" class="btn btn-primary btn-sm editButton" id="<?php echo $book['bookId']?>"><i class="fa-regular fa-pen-to-square"></i>Edit</button>
+                            <button style="width: 80px;" class="btn btn-danger btn-sm deleteButton" id="<?php echo $book['bookId']?>"><i class="fa-regular fa-trash-can"></i>Delete</button>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -160,11 +160,11 @@
                 <input type="text"name="isbn" class="form-control" required placeholder="Enter ISBN" required>
             </div>
             <div class="input-group mb-3">
-                <label class="input-group-text" for="inputGroupFile01">Image Front Cover</label>
+                <label class="input-group-text" for="inputGroupFile01">Image Book Stem</label>
                 <input type="file" class="form-control" id="inputGroupFile01" name="image1" accept="image/*" required>            
             </div>
             <div class="input-group mb-3">
-                <label class="input-group-text" for="inputGroupFile02">Image Book Stem</label>
+                <label class="input-group-text" for="inputGroupFile02">Image Front Cover</label>
                 <input type="file" class="form-control" id="inputGroupFile02" name="image2" accept="image/*" required>
             </div>
         </form>
@@ -252,11 +252,11 @@
             <input type="text" class="form-control" id="isbnEdit" name="isbn" required>
           </div>
           <div class="input-group mb-3">
-                <label class="input-group-text" for="inputGroupFile01">Image Front Cover</label>
+                <label class="input-group-text" for="inputGroupFile01">Image Book Stem</label>
                 <input type="file" class="form-control" id="inputGroupFile03" name="image1" accept="image/*" >
             </div>
             <div class="input-group mb-3">
-                <label class="input-group-text" for="inputGroupFile02">Image Book Stem</label>
+                <label class="input-group-text" for="inputGroupFile02">Image Front Cover</label>
                 <input type="file" class="form-control" id="inputGroupFile04" name="image2" accept="image/*">
             </div>
         </form>
