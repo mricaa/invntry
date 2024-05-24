@@ -1,5 +1,5 @@
 <?php
-include $_SERVER['DOCUMENT_ROOT'] . '/ADMIN/utility/DBConnection.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/PLVIL/utility/DBConnection.php';
 
 class Book {
     public $conn;
@@ -31,7 +31,7 @@ public function saveBook($post) {
     
     // Check if new images are uploaded
     if (!empty($_FILES['image1']['name']) && !empty($_FILES['image2']['name'])) {
-        $targetDir = $_SERVER['DOCUMENT_ROOT'] . '/ADMIN/uploads/';
+        $targetDir = $_SERVER['DOCUMENT_ROOT'] . '/PLVIL/uploads/';
         $image1Name = basename($_FILES["image1"]["name"]);
         $image2Name = basename($_FILES["image2"]["name"]);
         $image1Path = $targetDir . $image1Name;
@@ -92,8 +92,8 @@ public function deleteBook($deleteId) {
     // Get the book details before deleting
     $bookDetails = $this->getBookById($deleteId);
     if ($bookDetails) {
-        $image1Path = $_SERVER['DOCUMENT_ROOT'] . '/ADMIN/uploads/' . $bookDetails['image1'];
-        $image2Path = $_SERVER['DOCUMENT_ROOT'] . '/ADMIN/uploads/' . $bookDetails['image2'];
+        $image1Path = $_SERVER['DOCUMENT_ROOT'] . '/PLVIL/uploads/' . $bookDetails['image1'];
+        $image2Path = $_SERVER['DOCUMENT_ROOT'] . '/PLVIL/uploads/' . $bookDetails['image2'];
         
         // Delete the image files from the server
         if (file_exists($image1Path)) {
@@ -126,6 +126,7 @@ public function deleteBook($deleteId) {
     }
 }
 
+
 $book = new Book();
 
 // Save book details
@@ -146,4 +147,6 @@ if (isset($_POST['getBookById'])) {
     $bookDetails = $book->getBookById($bookId);
     echo json_encode($bookDetails);
 }
+
+
 ?>
