@@ -13,7 +13,7 @@ class Book {
 public function saveBook($post) {
     // Check if bookId is provided for an update operation
     $bookId = isset($post['bookId']) ? $post['bookId'] : '';
-    
+
     // Extract book details from POST data
     $bookCategory = $post['bookCategory'];
     $Title = $post['Title'];
@@ -24,13 +24,12 @@ public function saveBook($post) {
     $bookYear = $post['bookYear'];
     $Property = $post['Property'];
     $isbn = $post['isbn'];
-    
+
     // Handle file uploads for images
     $image1Name = '';
     $image2Name = '';
-    
-    // Check if new images are uploaded
-    if (!empty($_FILES['image1']['name']) && !empty($_FILES['image2']['name'])) {
+
+    if (isset($_FILES['image1']) && isset($_FILES['image2'])) {
         $targetDir = $_SERVER['DOCUMENT_ROOT'] . '/PLVIL/uploads/';
         $image1Name = basename($_FILES["image1"]["name"]);
         $image2Name = basename($_FILES["image2"]["name"]);
@@ -38,22 +37,31 @@ public function saveBook($post) {
         $image2Path = $targetDir . $image2Name;
 
         // Move uploaded files to the upload directory
-        if (move_uploaded_file($_FILES["image1"]["tmp_name"], $image1Path) && move_uploaded_file($_FILES["image2"]["tmp_name"], $image2Path)) {
+        if (move_uploaded_file($_FILES["image1"]["tmp_name"], $image1Path) &&
+            move_uploaded_file($_FILES["image2"]["tmp_name"], $image2Path)) {
             // Files uploaded successfully
         } else {
             return json_encode(array('type' => 'fail', 'message' => 'Failed to upload images.'));
         }
-    } elseif (!empty($bookId)) {
-        // If no new images are uploaded and it's an update operation, retain the previous image data
-        $prevImageData = $this->getBookById($bookId);
-        $image1Name = $prevImageData['image1'];
-        $image2Name = $prevImageData['image2'];
     }
 
     // Determine if updating an existing record or adding a new one
     if (!empty($bookId)) {
         // Update existing book record
-        $sql = "UPDATE book SET bookCategory='$bookCategory', Title='$Title', Author='$Author', columnNumber='$columnNumber', Accession='$Accession', bookEdition='$bookEdition', bookYear='$bookYear', Property='$Property', ISBN='$isbn', image1='$image1Name', image2='$image2Name' WHERE bookId=$bookId";
+        $sql = "UPDATE book SET bookCategory='$bookCategory', Title='$Title', Author='$Author', columnNumber='$columnNumber', Accession='$Accession', bookEdition='$bookEdition', bookYear='$bookYear', Property='$Property', ISBN='$isbn'";
+        
+        // Check if new image1 is uploaded
+        if (!empty($image1Name)) {
+            $sql .= ", image1='$image1Name'";
+        }
+
+        // Check if new image2 is uploaded
+        if (!empty($image2Name)) {
+            $sql .= ", image2='$image2Name'";
+        }
+
+        $sql .= " WHERE bookId=$bookId";
+
         $result = $this->conn->query($sql);
         // Determine if the update was successful
         if ($result) {
