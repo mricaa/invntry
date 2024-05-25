@@ -33,4 +33,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $books = $book->getBooksByCategory($category);
     echo json_encode($books);
 }
+
 ?>
