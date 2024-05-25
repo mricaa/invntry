@@ -25,44 +25,36 @@ public function saveBook($post) {
     $Property = $post['Property'];
     $isbn = $post['isbn'];
 
-    // Handle file uploads for images
-    $image1Name = '';
-    $image2Name = '';
-
-    if (isset($_FILES['image1']) && isset($_FILES['image2'])) {
-        $targetDir = $_SERVER['DOCUMENT_ROOT'] . '/PLVIL/uploads/';
-        $image1Name = basename($_FILES["image1"]["name"]);
-        $image2Name = basename($_FILES["image2"]["name"]);
-        $image1Path = $targetDir . $image1Name;
-        $image2Path = $targetDir . $image2Name;
-
-        // Move uploaded files to the upload directory
-        if (move_uploaded_file($_FILES["image1"]["tmp_name"], $image1Path) &&
-            move_uploaded_file($_FILES["image2"]["tmp_name"], $image2Path)) {
-            // Files uploaded successfully
-        } else {
-            return json_encode(array('type' => 'fail', 'message' => 'Failed to upload images.'));
-        }
-    }
-
     // Determine if updating an existing record or adding a new one
     if (!empty($bookId)) {
-        // Update existing book record
+        // Existing book, check if new images are provided
+        $image1Name = '';
+        $image2Name = '';
+        if (isset($_FILES['image1']) && $_FILES['image1']['size'] > 0 && isset($_FILES['image2']) && $_FILES['image2']['size'] > 0) {
+            // Handle file uploads for images
+            $targetDir = $_SERVER['DOCUMENT_ROOT'] . '/PLVIL/uploads/';
+            $image1Name = basename($_FILES["image1"]["name"]);
+            $image2Name = basename($_FILES["image2"]["name"]);
+            $image1Path = $targetDir . $image1Name;
+            $image2Path = $targetDir . $image2Name;
+
+            // Move uploaded files to the upload directory
+            if (move_uploaded_file($_FILES["image1"]["tmp_name"], $image1Path) &&
+                move_uploaded_file($_FILES["image2"]["tmp_name"], $image2Path)) {
+                // Files uploaded successfully, continue with database update
+            } else {
+                return json_encode(array('type' => 'fail', 'message' => 'Failed to upload images.'));
+            }
+        }
+
+        // Update existing book record, including image paths if provided
         $sql = "UPDATE book SET bookCategory='$bookCategory', Title='$Title', Author='$Author', columnNumber='$columnNumber', Accession='$Accession', bookEdition='$bookEdition', bookYear='$bookYear', Property='$Property', ISBN='$isbn'";
-        
-        // Check if new image1 is uploaded
-        if (!empty($image1Name)) {
-            $sql .= ", image1='$image1Name'";
+        if (!empty($image1Name) && !empty($image2Name)) {
+            $sql .= ", image1='$image1Name', image2='$image2Name'";
         }
-
-        // Check if new image2 is uploaded
-        if (!empty($image2Name)) {
-            $sql .= ", image2='$image2Name'";
-        }
-
         $sql .= " WHERE bookId=$bookId";
-
         $result = $this->conn->query($sql);
+
         // Determine if the update was successful
         if ($result) {
             return json_encode(array('type' => 'success', 'message' => 'Book successfully updated.'));
@@ -71,8 +63,29 @@ public function saveBook($post) {
         }
     } else {
         // Insert new book record
+        // Handle file uploads for images if they exist
+        $image1Name = '';
+        $image2Name = '';
+        if (isset($_FILES['image1']) && $_FILES['image1']['size'] > 0 && isset($_FILES['image2']) && $_FILES['image2']['size'] > 0) {
+            $targetDir = $_SERVER['DOCUMENT_ROOT'] . '/PLVIL/uploads/';
+            $image1Name = basename($_FILES["image1"]["name"]);
+            $image2Name = basename($_FILES["image2"]["name"]);
+            $image1Path = $targetDir . $image1Name;
+            $image2Path = $targetDir . $image2Name;
+
+            // Move uploaded files to the upload directory
+            if (move_uploaded_file($_FILES["image1"]["tmp_name"], $image1Path) &&
+                move_uploaded_file($_FILES["image2"]["tmp_name"], $image2Path)) {
+                // Files uploaded successfully, continue with database insertion
+            } else {
+                return json_encode(array('type' => 'fail', 'message' => 'Failed to upload images.'));
+            }
+        }
+
+        // Insert new book record
         $sql = "INSERT INTO book (bookCategory, Title, Author, columnNumber, Accession, bookEdition, bookYear, Property, ISBN, image1, image2) VALUES ('$bookCategory', '$Title', '$Author', '$columnNumber', '$Accession', '$bookEdition', '$bookYear', '$Property', '$isbn', '$image1Name', '$image2Name')";
         $result = $this->conn->query($sql);
+
         // Determine if the insertion was successful
         if ($result) {
             return json_encode(array('type' => 'success', 'message' => 'Book successfully added.'));
