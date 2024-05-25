@@ -54,6 +54,7 @@
         <div class="container-fluid bg-light p-4">
             <div class="row">
                 <div class="col-2 text-center">
+                    <img id="book-image" class="img-fluid img rounded border border-5 border-success" alt="">
                 </div>
                 <div class="col-7 border border-5 border-black rounded shadow-lg">
                     <div class="container">
@@ -61,7 +62,7 @@
                             <h1 id="book-title">Book Title</h1>
                         </div>
                         <div>
-                            <img class="img img-fluid" src="./gifs/locsample.gif" alt="">
+                            <img id="book-gif" class="img img-fluid" src="" alt="">
                         </div>
                     </div>
                 </div>
@@ -95,7 +96,32 @@
                         if (data) {
                             document.getElementById('book-title').textContent = data.Title;
                             document.getElementById('book-image').src = './uploads/' + data.image1;
-                            // Update other parts of the page with book details
+
+                            // Determine the column number
+                            const columnNumber = parseInt(data.columnNumber);
+                            
+                            let gifId = "";
+                            if (columnNumber === 1) {
+                                gifId = "S1L";
+                            } else if (columnNumber === 2) {
+                                gifId = "S1R";
+                            } else if (columnNumber === 3) {
+                                gifId = "S2L";
+                            } else if (columnNumber === 4) {
+                                gifId = "S2R";
+                            } else if (columnNumber === 5) {
+                                gifId = "S3L";
+                            } else if (columnNumber === 6) {
+                                gifId = "S3R";
+                            } else if (columnNumber === 7) {
+                                gifId = "S4L";
+                            } else if (columnNumber === 8) {
+                                gifId = "S4R";
+                            }
+                            
+                            if (gifId) {
+                                document.getElementById('book-gif').src = document.getElementById(gifId).src;
+                            }
                         }
                     })
                     .catch(error => {
@@ -105,6 +131,16 @@
         });
     </script>
 
+    <!-- Preload GIFs with IDs -->
+    <img id="S1L" src="./gifs/S1L.gif" style="display: none;">
+    <img id="S1R" src="./gifs/S1R.gif" style="display: none;">
+    <img id="S2L" src="./gifs/S2L.gif" style="display: none;">
+    <img id="S2R" src="./gifs/S2R.gif" style="display: none;">
+    <img id="S3L" src="./gifs/S3L.gif" style="display: none;">
+    <img id="S3R" src="./gifs/S3R.gif" style="display: none;">
+    <img id="S4L" src="./gifs/S4L.gif" style="display: none;">
+    <img id="S4R" src="./gifs/S4R.gif" style="display: none;">
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="js/browse.js"></script>
 </body>
